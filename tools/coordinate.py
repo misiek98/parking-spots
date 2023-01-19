@@ -1,3 +1,6 @@
+import cv2
+
+
 class Coordinate:
     """ 
     Class Coordinate contains X and Y coordinates.
@@ -52,3 +55,30 @@ class Coordinate:
             raise TypeError(
                 "The y attribute must be of type int, "
                 f"not {type(value).__name__}")
+
+
+def get_coordinate(
+        event, x: int, y: int, flags: list, params: list) -> Coordinate:
+    """
+    When you double click the left mouse button on an image, the function
+    will return a Coordinate object with a click's location.
+
+    Parameters
+    ----------
+    event:
+        Expected event (e.g. left mouse button pressed).
+    x:
+        The event's x-coordinate.
+    y:
+        The event's y-coordinate.
+    flags:
+        Any relevant flags.
+    params:
+        Extra parameters
+
+    Returns
+    -------
+    None
+    """
+    if event == cv2.EVENT_LBUTTONDBLCLK:
+        return (Coordinate(x=x, y=y))
