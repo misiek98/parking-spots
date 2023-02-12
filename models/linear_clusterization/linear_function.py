@@ -3,24 +3,25 @@ import numpy as np
 
 class LinearFunction:
     """
-    abcdef
+    Stores information about the line - its slope, the a & b parameters 
+    and the point the line passes through.
 
-    Atributes:
+    Attributes:
     ----------
     angle: int
-        abcdef
+        The angle at which the line is to be sloped.
 
     point: tuple
-        abcdef
+        The point through which the straight line passes.
 
     a: float
-        abcdef
+        Coefficient 'a' of the straight line.
 
     b: float
-        abcdef
+        Coefficient 'b' of the straight line.
     """
 
-    def __init__(self, angle, point):
+    def __init__(self, angle: int, point: tuple):
         self.angle = angle
         self.point = point
 
@@ -29,7 +30,7 @@ class LinearFunction:
         return self._angle
 
     @angle.setter
-    def angle(self, value):
+    def angle(self, value: int):
         if not isinstance(value, int):
             raise TypeError(
                 "The angle parameter must be of type int, not "
@@ -52,7 +53,7 @@ class LinearFunction:
         return self._point
 
     @point.setter
-    def point(self, value):
+    def point(self, value: tuple):
         if not isinstance(value, tuple):
             raise TypeError(
                 "The point parameter must be of type tuple, "
@@ -73,7 +74,3 @@ class LinearFunction:
     @property
     def b(self):
         return round((self.point[1] - self.a*self.point[0]), 5)
-
-
-# x = LinearFunction(120, (1153, 540))
-# print(x.angle, x.a, x.b)
