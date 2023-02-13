@@ -1,6 +1,9 @@
+from collections import namedtuple
+
 import numpy as np
 
 from images.coordinate import Coordinate
+from images.bounding_box import BoundingBox
 
 
 class LinearFunction:
@@ -13,6 +16,15 @@ class LinearFunction:
     angle: int
         The angle at which the line is to be sloped.
 
+    list_of_bounding_boxes: list
+        dasdasd
+
+    seed: int
+        dasdasdasdasd
+
+    list_of_distances: list
+        dasdasdasd
+
     point: Coordinate
         The point through which the straight line passes.
 
@@ -22,14 +34,14 @@ class LinearFunction:
     b: float
         Coefficient 'b' of the straight line.
 
-    Methods:
-    -------
-    calculate_distance
+
     """
 
-    def __init__(self, angle: int, point: Coordinate):
+    def __init__(self, angle: int, list_of_bounding_boxes: list,
+                 seed=np.random.randint(0, 43)):
         self.angle = angle
-        self.point = point
+        self.list_of_bounding_boxes = list_of_bounding_boxes
+        self.seed = seed
 
     @property
     def angle(self):
@@ -55,17 +67,43 @@ class LinearFunction:
         self._angle = value
 
     @property
-    def point(self):
-        return self._point
+    def list_of_bounding_boxes(self):
+        return self._list_of_bounding_boxes
 
-    @point.setter
-    def point(self, value: Coordinate):
-        if not isinstance(value, Coordinate):
+    @list_of_bounding_boxes.setter
+    def list_of_bounding_boxes(self, value):
+        if not isinstance(value, list):
             raise TypeError(
-                "The point parameter must be of type Coordinate, "
+                "The list_of_bounding_boxes parameter must be of type list, "
                 f"not {type(value).__name__}.")
 
-        self._point = value
+        for bbox in value:
+            if not isinstance(bbox, BoundingBox):
+                raise TypeError(
+                    "Elements in the list_of_bounding_boxes must be of type "
+                    f"BoundingBox, not {type(bbox).__name__}.")
+
+        self._list_of_bounding_boxes = value
+
+    @property
+    def seed(self):
+        return self._seed
+
+    @seed.setter
+    def seed(self, value):
+        if not isinstance(value, int):
+            raise TypeError(
+                "The seed parameter must be of type int, not "
+                f"{type(value).__name__}.")
+
+        self._seed = value
+
+    @property
+    def point(self):
+        np.random.seed(self.seed)
+        point = np.random.choice(self.list_of_bounding_boxes)
+        return Coordinate(x=point.x_center,
+                          y=point.y_center)
 
     @property
     def a(self):
@@ -75,7 +113,7 @@ class LinearFunction:
     def b(self):
         return round((self.point.y - self.a*self.point.x), 5)
 
-    def calculate_distance(self, point):
+    def __calculate_distance(self, point):
         """
         Allows to calculate the distance from a point to the line.
 
@@ -88,3 +126,14 @@ class LinearFunction:
             abs(-self.a*point.x + point.y + - self.b)
             / np.sqrt((-self.a)**2 + (1)**2)
         )
+
+    @property
+    def list_of_distances(self):
+        bbox_centers = [Coordinate(bbox.x_center, bbox.y_center)
+                        for bbox in self.list_of_bounding_boxes]
+
+        distance = namedtuple("distance", "point_index point_to_line_distance")
+        return [
+            distance(index, int(self.__calculate_distance(bbox_center)))
+            for index, bbox_center in enumerate(bbox_centers)
+        ]
