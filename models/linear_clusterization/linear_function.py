@@ -1,5 +1,7 @@
 import numpy as np
 
+from images.coordinate import Coordinate
+
 
 class LinearFunction:
     """
@@ -11,7 +13,7 @@ class LinearFunction:
     angle: int
         The angle at which the line is to be sloped.
 
-    point: tuple
+    point: Coordinate
         The point through which the straight line passes.
 
     a: float
@@ -19,9 +21,13 @@ class LinearFunction:
 
     b: float
         Coefficient 'b' of the straight line.
+
+    Methods:
+    -------
+    calculate_distance
     """
 
-    def __init__(self, angle: int, point: tuple):
+    def __init__(self, angle: int, point: Coordinate):
         self.angle = angle
         self.point = point
 
@@ -53,17 +59,11 @@ class LinearFunction:
         return self._point
 
     @point.setter
-    def point(self, value: tuple):
-        if not isinstance(value, tuple):
+    def point(self, value: Coordinate):
+        if not isinstance(value, Coordinate):
             raise TypeError(
-                "The point parameter must be of type tuple, "
+                "The point parameter must be of type Coordinate, "
                 f"not {type(value).__name__}.")
-
-        for point_coordinate in value:
-            if not isinstance(point_coordinate, int):
-                raise TypeError(
-                    "The point parameter must consist of values that "
-                    f"are integers, not {type(point_coordinate).__name__}.")
 
         self._point = value
 
@@ -73,4 +73,18 @@ class LinearFunction:
 
     @property
     def b(self):
-        return round((self.point[1] - self.a*self.point[0]), 5)
+        return round((self.point.y - self.a*self.point.x), 5)
+
+    def calculate_distance(self, point):
+        """
+        abdef
+
+        Attributes:
+        -----------
+        point: Coordinate
+            A point from which you want to calculate distance to line.
+        """
+        return (
+            abs(-self.a*point.x + point.y + - self.b)
+            / np.sqrt((-self.a)**2 + (1)**2)
+        )
