@@ -77,7 +77,7 @@ class LinearFunction:
 
     def calculate_distance(self, point):
         """
-        abdef
+        Allows to calculate the distance from a point to the line.
 
         Attributes:
         -----------
