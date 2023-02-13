@@ -17,13 +17,16 @@ class LinearFunction:
         The angle at which the line is to be sloped.
 
     list_of_bounding_boxes: list
-        dasdasd
+        A list with image bounding boxes. The list must contain 
+        objects of type BoundingBox.
 
     seed: int
-        dasdasdasdasd
+        Allows you to generate the same numbers / choices every time 
+        you call the parameter or function.
 
     list_of_distances: list
-        dasdasdasd
+        The list that contains an information about bounding box list
+        index and its distance from the list.
 
     point: Coordinate
         The point through which the straight line passes.
