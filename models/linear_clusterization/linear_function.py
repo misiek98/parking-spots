@@ -9,7 +9,8 @@ from images.bounding_box import BoundingBox
 class LinearFunction:
     """
     Stores information about the line - its slope, the a & b parameters 
-    and the point the line passes through.
+    and the point the line passes through. Also contains an information
+    about the points' distance from the line.
 
     Attributes:
     ----------
@@ -36,8 +37,6 @@ class LinearFunction:
 
     b: float
         Coefficient 'b' of the straight line.
-
-
     """
 
     def __init__(self, angle: int, list_of_bounding_boxes: list,
