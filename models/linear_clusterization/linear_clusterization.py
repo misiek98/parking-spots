@@ -1,8 +1,8 @@
 import numpy as np
 
 from images.bounding_box import BoundingBox
-from images.coordinate import Coordinate
 from models.linear_clusterization.linear_function import LinearFunction
+from models.linear_clusterization.factors import Factor
 
 
 class LinearClusterization:
@@ -31,7 +31,7 @@ class LinearClusterization:
 
     def __init__(self, list_of_bounding_boxes: list, angle_step: int,
                  seed=42, areas=[]):
-        self.list_of_bounding_boxes = list_of_bounding_boxes
+        self.list_of_bounding_boxes = list_of_bounding_boxes.copy()
         self.angle_step = angle_step
         self.seed = seed
         self.areas = areas
@@ -101,7 +101,7 @@ class LinearClusterization:
     @property
     def __list_of_lines_different_angles(self):
         """
-        dasdasdasd
+        Lista przechowująca obiekty klasy LinearFunction
         """
         angles = [angle
                   for angle in range(0, 181, self.angle_step)
@@ -115,7 +115,7 @@ class LinearClusterization:
 
     def __sort_distances(self, line):
         """
-        dsadasdasdasdasd
+        Sortuje rosnąco odległości z indexami wszystkich punktów od prostej
         """
 
         return sorted(line.list_of_distances,
@@ -123,15 +123,18 @@ class LinearClusterization:
 
     def __only_distances(self, line):
         """
-        dsadasdasdasdasd
+        lista przechowująca odległości punktów od prostej bez indexów
         """
 
         return [distance.point_to_line_distance
                 for distance in line]
 
-    def __determine_areas(self):
+    def __determine_areas(self, factor):
         """
-        dsadasdasdasdasd
+        umożliwia zdeterminowanie stref
+        
+        factor - współczynnik o ile się mnoży poprzednią wartość
+        zwraca listę z utworzonymi strefami dla każdej prostej
         """
 
         areas = []
@@ -141,7 +144,17 @@ class LinearClusterization:
             sorted_list_of_distances = self.__sort_distances(
                 point_to_line_distances)
             only_distances = self.__only_distances(sorted_list_of_distances)
-            fac = np.max(only_distances) / np.mean(only_distances)
+
+            match factor:
+                case "max_mean":
+                    fac = Factor(only_distances).max_mean()
+                    
+                case _:
+                    raise ValueError( # JAKIŚ INNY ERROR DAĆ
+                        """The specified coefficient name does not exist, 
+                        select one of the coefficients from the list:\n
+                            max_mean
+                        """)
 
             area = []
 
@@ -176,7 +189,7 @@ class LinearClusterization:
 
     def __areas_length(self, areas):
         """
-        dsadasdasdasdasd
+        Zwraca długość stref - liczbę miejsc parkingowych należących do dajen strefy
         """
 
         return [
@@ -185,14 +198,14 @@ class LinearClusterization:
 
     def __max_area_length(self, areas_length):
         """
-        dsadasdasdasdasd
+        zwraca maksymalną długość strefy
         """
 
         return max(areas_length)
 
     def __get_areas_max_length_index(self, areas_length, max_area_length):
         """
-        dsadasdasdasdasd
+        Zwraca indeks maksymalnej długości strefy
         """
 
         return np.where(
@@ -200,18 +213,21 @@ class LinearClusterization:
 
     def __find_minimum_distances(self, areas_index_max_length, det_areas):
         """
-        dsadasdasdasdasd
+        Jeżeli jest więcej niż jedna strefa o tej samej długości, to 
+        oblicza się sumę odległości punktów należących do strefy od prostej.
+        Zwracana jest lista
+        
+        
         """
 
         distances = []
 
         for index in areas_index_max_length:
             line = self.__list_of_lines_different_angles[index]
-            abc = det_areas
             distance = sum([
                 point.point_to_line_distance
                 for point in line.list_of_distances
-                if point.point_index in abc[index]
+                if point.point_index in det_areas[index]
             ])
 
             distances.append(distance)
@@ -220,19 +236,19 @@ class LinearClusterization:
 
     def __find_best_area(self, areas):
         """
-        dsadasdasdasdasd
+        Zwraca indeks strefy z najmniejszą łączną odległością
         """
 
         return areas.index(min(areas))
 
-    def fit(self):
+    def fit(self, factor):
         """
         dsadasdasdasdasd
         """
 
         while len(self.list_of_bounding_boxes) != 0:
             # list of determined areas for each line
-            determined_areas = self.__determine_areas()
+            determined_areas = self.__determine_areas(factor)
             # area length for each line
             areas_length = self.__areas_length(determined_areas)
             # max area length
