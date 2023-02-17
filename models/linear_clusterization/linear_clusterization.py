@@ -7,26 +7,30 @@ from models.linear_clusterization.factors import Factor
 
 class LinearClusterization:
     """
-    ABCDEF
+    Contains methods for linear clustering.
 
     Attributes:
     ----------
     list_of_bounding_boxes: list
-        abcdef
+        A list that stores BoundingBox objects.
 
     angle_step: int
-        sdasdasd
+        An integer number specifying the incrementation. Must be greater 
+        than or equal to 1 and less than or equal to 180.
 
     seed: int
-        dasdasdasd
+        An integer number. Allows repetition of results.
 
     areas: list
-        dasdasdasd
+        A list that stores a BoundingBox objects that belong to 
+        specified clusters.
+
 
     Methods:
     -------
-    fit()
-      dasdasdas
+    fit(factor)
+        Based on BoundingBox centers the function determines the
+        clusters.
     """
 
     def __init__(self, list_of_bounding_boxes: list, angle_step: int,
@@ -101,7 +105,7 @@ class LinearClusterization:
     @property
     def __list_of_lines_different_angles(self):
         """
-        Lista przechowująca obiekty klasy LinearFunction
+        A list that stores a LinearFunction objects.
         """
         angles = [angle
                   for angle in range(0, 181, self.angle_step)
@@ -115,7 +119,8 @@ class LinearClusterization:
 
     def __sort_distances(self, line):
         """
-        Sortuje rosnąco odległości z indexami wszystkich punktów od prostej
+        Sorts and returns the distances of points from a straight line 
+        in ascending order.
         """
 
         return sorted(line.list_of_distances,
@@ -123,7 +128,8 @@ class LinearClusterization:
 
     def __only_distances(self, line):
         """
-        lista przechowująca odległości punktów od prostej bez indexów
+        A list that stores distances from points to the line. This 
+        simplifies the calculations.
         """
 
         return [distance.point_to_line_distance
@@ -131,10 +137,18 @@ class LinearClusterization:
 
     def __determine_areas(self, factor):
         """
-        umożliwia zdeterminowanie stref
-        
-        factor - współczynnik o ile się mnoży poprzednią wartość
-        zwraca listę z utworzonymi strefami dla każdej prostej
+        Allows to determine the clusters.
+
+        Parameters:
+        ----------
+        factor: 
+            A mathematical function to determine by how much the next 
+            distance of a point from a straight line can be greater 
+            than the current one.
+
+        Returns:
+        -------
+        A list with determined clusters.
         """
 
         areas = []
@@ -148,9 +162,9 @@ class LinearClusterization:
             match factor:
                 case "max_mean":
                     fac = Factor(only_distances).max_mean()
-                    
+
                 case _:
-                    raise ValueError( # JAKIŚ INNY ERROR DAĆ
+                    raise AttributeError(
                         """The specified coefficient name does not exist, 
                         select one of the coefficients from the list:\n
                             max_mean
@@ -189,7 +203,12 @@ class LinearClusterization:
 
     def __areas_length(self, areas):
         """
-        Zwraca długość stref - liczbę miejsc parkingowych należących do dajen strefy
+        Returns a list with the length of areas.
+
+        Parameters:
+        ----------
+        areas:
+            Clusters.
         """
 
         return [
@@ -198,14 +217,27 @@ class LinearClusterization:
 
     def __max_area_length(self, areas_length):
         """
-        zwraca maksymalną długość strefy
+        Returns a maximum length of the area.
+
+        Parameters:
+        ----------
+        areas_length:
+            A list with the cluster's length.
         """
 
         return max(areas_length)
 
     def __get_areas_max_length_index(self, areas_length, max_area_length):
         """
-        Zwraca indeks maksymalnej długości strefy
+        Returns an index(es) of the longest areas.
+
+        Parameters:
+        ----------
+        areas_length:
+            A list with the cluster's length.
+
+        max_area_length: int
+            Maximum cluster's length.
         """
 
         return np.where(
@@ -213,11 +245,17 @@ class LinearClusterization:
 
     def __find_minimum_distances(self, areas_index_max_length, det_areas):
         """
-        Jeżeli jest więcej niż jedna strefa o tej samej długości, to 
-        oblicza się sumę odległości punktów należących do strefy od prostej.
-        Zwracana jest lista
-        
-        
+        In case of the multiple areas with the same length, this method
+        calculates the total distance of points to the line.
+
+        Parameters:
+        ----------
+        areas_index_max_length:
+            An list that contains indexes with maximum number of 
+            elements.
+
+        det_areas:
+            Determined areas.
         """
 
         distances = []
@@ -236,30 +274,42 @@ class LinearClusterization:
 
     def __find_best_area(self, areas):
         """
-        Zwraca indeks strefy z najmniejszą łączną odległością
+        Returns an index with the best area.
+
+        Parameters:
+        ----------
+        areas:
+            A list that contains the sums of distances of points from 
+            a straight line.
         """
 
         return areas.index(min(areas))
 
     def fit(self, factor):
         """
-        dsadasdasdasdasd
+        A method that starts the training.
+
+        Parameters:
+        ----------
+        factor:
+            A method from the Factor class.
         """
 
         while len(self.list_of_bounding_boxes) != 0:
-            # list of determined areas for each line
+            # determining areas for each line
             determined_areas = self.__determine_areas(factor)
-            # area length for each line
+            # calculating the area length for each line
             areas_length = self.__areas_length(determined_areas)
-            # max area length
+            # getting the area's maximum length
             max_area_length = self.__max_area_length(areas_length)
-            # index of max area length
+            # determining the index(es) of the longest areas
             area_max_length_index = self.__get_areas_max_length_index(
                 areas_length, max_area_length)
-            # list of sum of distanes from points to the lines
+            # determining the list of sum of distances from points
+            # to line
             area_min_distance = self.__find_minimum_distances(
                 area_max_length_index, determined_areas)
-            # index of the shortest distance
+            # determining the index of the shortest distance
             shortest_area_distance_index = self.__find_best_area(
                 area_min_distance)
 

@@ -27,7 +27,7 @@ class LinearFunction:
 
     list_of_distances: list
         The list that contains an information about bounding box list
-        index and its distance from the list.
+        index and its distance from the line.
 
     point: Coordinate
         The point through which the straight line passes.

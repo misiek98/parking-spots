@@ -3,12 +3,18 @@ import numpy as np
 
 class Factor:
     """
-    abcdef
+    Contains different metrics for the LinearClusterization algorithm.
 
     Attributes:
     ----------
     list_of_distances: list or tuple
-        dasdasdasd
+        A list or tuple that stores distances from point to line.
+
+    Methods:
+    -------
+    max_mean:
+        Divides the maximum value of the list_of_distances by the 
+        average value.
     """
 
     def __init__(self, list_of_distances):
@@ -33,9 +39,14 @@ class Factor:
 
         self._list_of_distances = value
 
-    def max_mean(self):
+    def max_mean(self) -> float:
         """
-        dasdasd
+        Divides the maximum value of the list_of_distances by the 
+        average value.
+
+        Returns:
+        -------
+        float
         """
 
         return np.max(self.list_of_distances) / np.mean(self.list_of_distances)
