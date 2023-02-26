@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 /data/*
-!/data/file26.jpg
+!/data/file.bmp
