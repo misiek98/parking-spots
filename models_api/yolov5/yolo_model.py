@@ -1,4 +1,5 @@
 import torch
+import numpy
 
 from images.bounding_box import BoundingBox
 from images.coordinate import Coordinate
@@ -6,7 +7,20 @@ from images.coordinate import Coordinate
 
 class YoloModel:
     """
+    A simple YOLOv5 API.
 
+    Attributes:
+    ----------
+    path_to_model: str
+        A path to YOLOv5 model.
+
+    model: models.common.AutoShape
+        A loaded YOLOv5 model.
+
+    Methods:
+    -------
+    detect(frame):
+        Allows to make detections on the given object 'frame'.
     """
 
     def __init__(self, path_to_model: str):
@@ -38,24 +52,27 @@ class YoloModel:
                 path=self.path_to_model,
                 force_reload=True)
 
-    def detect(self, frame):
+    def __prepare_data(self, model_output):
         """
-        Allows to make detections on the given object 'frame'.
+        Changes model output from numpy array to list of bounding boxes.
 
         Attributes:
         ----------
-        frame: image
-            An image on which you want to make a detection.
+        model_output: numpy.ndarray
+            A model output
 
         Returns:
         -------
         A list with BoundingBox objects around the each detected object.
         """
+        if not isinstance(model_output, numpy.ndarray):
+            raise TypeError(
+                "The model_output parameter must be of type numpy array, "
+                f"not {type(model_output).__name__}.")
 
         list_of_bboxes = []
-        detection = self.model(frame).xyxy[0].numpy()
 
-        for x_min, y_min, x_max, y_max, _, _ in detection:
+        for x_min, y_min, x_max, y_max, _, _ in model_output:
             x_min = int(x_min)
             y_min = int(y_min)
             x_max = int(x_max)
@@ -67,3 +84,20 @@ class YoloModel:
             )
 
         return list_of_bboxes
+
+    def detect(self, frame):
+        """
+        Allows to make detections on the given 'frame' object.
+
+        Attributes:
+        ----------
+        frame: image
+            An image on which you want to make a detection.
+
+        Returns:
+        -------
+        A list with BoundingBox objects around the each detected object.
+        """
+
+        detection = self.model(frame).xyxy[0].numpy()
+        return self.__prepare_data(detection)
