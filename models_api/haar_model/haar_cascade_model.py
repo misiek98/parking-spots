@@ -6,6 +6,22 @@ from images.coordinate import Coordinate
 
 
 class HaarCascade:
+    """
+    A simple Haar-Cascade API.
+
+    Attributes:
+    ----------
+    path_to_model: str
+        A path to Haar-Cascade model.
+
+    model: models.common.AutoShape
+        A loaded Haar-Cascade model.
+
+    Methods:
+    -------
+    detect
+    """
+
     def __init__(self, path_to_model: str):
         self.path_to_model = path_to_model
 
@@ -27,6 +43,9 @@ class HaarCascade:
         return cv2.CascadeClassifier(self.path_to_model)
 
     def __convert_to_gray(self, frame):
+        """
+        Converts a photo to grayscale.
+        """
         return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     def __prepare_data(self, model_output):
@@ -73,19 +92,21 @@ class HaarCascade:
             An image on which you want to make a detection.
 
         scale_factor: float
-            dasdasd
+            Parameter specifying how much the image size is reduced at
+            each image scale.
 
         min_neighbors: int
-            dasdasdas
+            Parameter specifying how many neighbors each candidate
+            rectangle should have to retain it.
 
         min_size: tuple
-            dasdasd
+            Minimum possible object size. Smaller objects are ignored.
 
         max_size: tuple
-            dasdasdasd
+            Maximum possible object size.
 
         flags:
-            dasdasd. Default: cv2.CASCADE_SCALE_IMAGE
+            Other flags. Default: cv2.CASCADE_SCALE_IMAGE
 
         Returns:
         -------
