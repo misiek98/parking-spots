@@ -4,13 +4,14 @@ from unittest.mock import patch
 from parameterized import parameterized
 import numpy as np
 
-from models.linear_clusterization.linear_clusterization import LinearClusterization
+from models_api.linear_clusterization.linear_clusterization import\
+    LinearClusterization
 from images.coordinate import Coordinate
 from images.bounding_box import BoundingBox
 
 
 class TestLinearFunction(unittest.TestCase):
-    with open("/home/misiek/Pulpit/python/parking_spots/models/"
+    with open("/home/misiek/Pulpit/python/parking_spots/models_api/"
               "linear_clusterization/tests/bboxes.txt", "r") as file:
         line = file.readline()
 

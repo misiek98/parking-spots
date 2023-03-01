@@ -1,8 +1,8 @@
 import numpy as np
 
 from images.bounding_box import BoundingBox
-from models.linear_clusterization.linear_function import LinearFunction
-from models.linear_clusterization.factors import Factor
+from models_api.linear_clusterization.linear_function import LinearFunction
+from models_api.linear_clusterization.factors import Factor
 
 
 class LinearClusterization:
