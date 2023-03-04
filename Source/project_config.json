@@ -1,0 +1,9 @@
+{
+    "video": "C:\\Users\\Misiek\\Desktop\\film_dp_pracy\\Untitled.mp4",
+    "cascadeXML": "C:\\Users\\Misiek\\Desktop\\Python\\MGR\\Source\\haar_model\\results\\cascade.xml",
+    "yoloWeights": "C:\\Users\\Misiek\\Desktop\\Python\\MGR\\Source\\yolov3_files\\yolov3.weights",
+    "yoloNames": "C:\\Users\\Misiek\\Desktop\\Python\\MGR\\Source\\yolov3_files\\coco.names",
+    "yoloCfg": "C:\\Users\\Misiek\\Desktop\\Python\\MGR\\Source\\yolov3_files\\yolov3.cfg",
+    "probabilityMinimum": 0.5,
+    "threshold": 0.3
+}

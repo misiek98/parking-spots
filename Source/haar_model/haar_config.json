@@ -1,0 +1,6 @@
+{
+    "data": "C:\\Users\\Misiek\\Desktop\\Python\\MGR\\Source\\haar_model\\data",
+    "negDir": "C:\\Users\\Misiek\\Desktop\\Python\\MGR\\Source\\haar_model\\neg",
+    "posDir": "C:\\Users\\Misiek\\Desktop\\Python\\MGR\\Source\\haar_model\\pos",
+    "parkingLinesInfoFile": "C:\\Users\\Misiek\\Desktop\\Python\\MGR\\Source\\haar_model\\results\\parking_lines.info"
+}
