@@ -3,7 +3,7 @@ from collections import namedtuple
 
 from parameterized import parameterized
 
-from models.linear_clusterization.linear_function import LinearFunction
+from models_api.linear_clusterization.linear_function import LinearFunction
 from images.coordinate import Coordinate
 from images.bounding_box import BoundingBox
 
