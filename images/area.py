@@ -7,13 +7,13 @@ from images.bounding_box import BoundingBox
 
 class ParkingArea:
     """
-    Stores informations about a parking area: its endpoints, number of
-    occupied parking spots and total number of parking spots. Also
-    allows you to draw the area and check if an object is inside the
-    area.
+    Stores an information about the parking area: its endpoints, total
+    and occupied parking spots. Also allows you to draw the area and
+    check if an object is inside the area.
 
     Methods:
     -------
+    occupy_parking_spot
     is_in_area
     draw_area
     forget_detected_cars
@@ -76,11 +76,12 @@ class ParkingArea:
 
         self._img_height = value
 
-    @property
-    def __color(self):
-        return np.random.randint(0, 255, size=(1, 3)).tolist()[0]
-
     def __calculate_angles(self):
+        """
+        Calculates the line slope between bottom right corner of the
+        frame and the object's BoundingBox center.
+        """
+
         return [
             int(
                 np.degrees(
@@ -94,6 +95,10 @@ class ParkingArea:
         ]
 
     def __sort_bboxes_by_angle(self):
+        """
+        Sorts the list of BoundingBoxes by angle.
+        """
+
         return [
             bbox
             for angle, bbox in sorted(
@@ -126,6 +131,10 @@ class ParkingArea:
                              + self.__sort_bboxes_by_angle()[0].bbox_height))
 
     def __numeric_area(self):
+        """
+        Returns the coordinates of the area in numerical form.
+        """
+
         return np.array([
             [self.top_left_coordinate.x, self.top_left_coordinate.y],
             [self.top_right_coordinate.x, self.top_right_coordinate.y],
@@ -135,8 +144,14 @@ class ParkingArea:
 
     def is_in_area(self, point: Coordinate):
         """
+        Checks if the point is inside the area.
 
+        Parameters:
+        ----------
+        point: Coordinate
+            The point you want to check if is inside the area.
         """
+
         if not isinstance(point, Coordinate):
             raise TypeError(
                 "The point parameter must be of type Coordinate, "
@@ -152,6 +167,13 @@ class ParkingArea:
     def occupied_parking_spots(self):
         return self._occupied_parking_spots
 
+    def occupy_parking_spot(self):
+        """
+        Determines one parking spot as occupied.
+        """
+
+        self.occupied_parking_spots += 1
+
     @occupied_parking_spots.setter
     def occupied_parking_spots(self, value):
         if not isinstance(value, int):
@@ -163,19 +185,19 @@ class ParkingArea:
 
     def forget_detected_cars(self):
         """
-
+        Sets the area's occupied_parking_spots attribute to 0.
         """
-        self.occupied_parking_spots = 0
 
-    # def prepare_img(self, img):
-    #     img[self.top_left_coordinate.y:self.top_left_coordinate.y - 30,
-    #         self.top_left_coordinate.x:self.top_right_coordinate.x
-    #         ] = 0
-    #     return img
+        self.occupied_parking_spots = 0
 
     def draw_area(self, img: np.ndarray):
         """
+        Draws the area on the provided image.
 
+        Parameters:
+        ----------
+        img: np.ndarray
+            The image.
         """
 
         return cv2.polylines(
@@ -184,17 +206,3 @@ class ParkingArea:
             isClosed=True,
             color=[255, 100, 100],
             thickness=3)
-
-    def print_information(self, img: np.ndarray):
-        """
-
-        """
-        return cv2.putText(
-            img=img,
-            text=(f"{self.occupied_parking_spots} car(s) in "
-                  f"{self.number_of_parking_spots} spots."),
-            org=(self.top_left_coordinate.x, self.top_left_coordinate.y-10),
-            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-            fontScale=0.5,
-            color=[255, 100, 100],
-            thickness=2)
